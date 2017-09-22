@@ -7,17 +7,17 @@ module.exports = function check(str, bracketsConfig) {
   function findCloseBracket () {
     for (var number = 0; number<str.length; number++) {
       for (var i=0; i< bracketsConfig.length; i++) {
-        /*if (str.charAt(number) === bracketsConfig[i][1] &&
+        if (str.charAt(number) === bracketsConfig[i][1] &&
             bracketsConfig[i][0] === bracketsConfig[i][1]) {
 
             var openNumber = number;
-            for (var closeNumber = (openNumber + 1) ; closeNumber<str.length; number++) {
+            for (var closeNumber = (openNumber + 1) ; closeNumber<str.length; closeNumber++) {
                 if (str.charAt(closeNumber) === str.charAt(openNumber)) {
                   return [openNumber, bracketsConfig[i], closeNumber];
                 }
             }
             return false;
-        }*/
+        }
         if (str.charAt(number) === bracketsConfig[i][1]) {
           return [number, bracketsConfig[i], null];
         }
@@ -26,55 +26,57 @@ module.exports = function check(str, bracketsConfig) {
     return false;
   }
 
-  function isCorrectClosingBracket (number/*, number2*/) {
+  function isCorrectClosingBracket (number, number2) {
 
-    /*if (typeOfBrackets[0] === typeOfBrackets[1]) {
+    if (typeOfBrackets[0] === typeOfBrackets[1]) {
       if (number === number2 - 1) {
         return true;
       }
       if ((number - number2)%2 === 0) {
         return false;
       }
-      return undefined;
-      var newStr = str.substring(number+1, number2-1);
-      console.log(newStr);
+      var newStr = str.substring(number+1, number2);
       var c = check(newStr, bracketsConfig);
       if (c == true) {
         return true;
       } else {
         return false;
       }
-    }*/
+    }
     if ( str.charAt(number - 1) === typeOfBrackets[0]) {
       return true;
     }
     return false;
-  } 
-
-  var find = findCloseBracket();
-  var number = find[0];
-  var typeOfBrackets =  find[1];
-  /*var number2 = find[2];*/
-  var Correct = isCorrectClosingBracket(number/* number2*/);
-
-  if (/*!(typeOfBrackets[0] === typeOfBrackets[1]) &&*/ number == 0) { 
-    return false;
   }
+
+  var find = findCloseBracket(str);
   if (!findCloseBracket()) {
     return false;
   }
+  var number = find[0];
+  var typeOfBrackets =  find[1];
+  var number2 = find[2];
+  var Correct = isCorrectClosingBracket(number, number2);
+
+  if (!(typeOfBrackets[0] === typeOfBrackets[1]) && number == 0) { 
+    return false;
+  }
+
   if (!Correct) {
     return false;
   } else if ((str.length == 2) && Correct){ 
     return true;
   } else if (str.length > 2){
 
-    /*if (typeOfBrackets[0] === typeOfBrackets[1]) {
-      str = str.substring(0, number-1) + str.substring(number2+1, str.length);
-    } else {*/
+    if (typeOfBrackets[0] === typeOfBrackets[1]) {
+      str = str.substring(0, number) + str.substring(number2+1, str.length);
+    } else {
       str = str.substring(0, number-1) + str.substring(number+1, str.length); 
-    /*}*/
-    console.log(str);
+    }
+
+    if (str.length == 0) {
+      return true;
+    }
      
     var b = check(str, bracketsConfig);
 
@@ -84,6 +86,7 @@ module.exports = function check(str, bracketsConfig) {
       return false;
     }
   }
+  return false;
 }
 
 
