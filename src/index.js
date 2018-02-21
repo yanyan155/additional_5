@@ -1,92 +1,70 @@
 module.exports = function check(str, bracketsConfig) {
 
+  function findCloseBracket (str, i) {
+    var sameBracketsSymbolAndCount = []; 
+    if(i !=0) {
+      i--;
+    }
+    for (i; i<str.length; i++) {
+      var symbol = str.charAt(i);
+      var isFind = bracketsConfig.some(elem => elem[1] == symbol); 
+      var isSame = bracketsConfig.some(elem => elem[0] == symbol);
+      if(isFind && !isSame) {
+        var newString = str.slice(0, i+1);
+        return newString;
+      } else if(isFind && isSame) {
+        var find = sameBracketsSymbolAndCount.find(elem => elem[0] === symbol);
+        if(find != undefined) {
+          var count = find[1];
+          if(count === 1) {
+             var findIndex = sameBracketsSymbolAndCount.findIndex(elem => elem[0] === symbol);
+             sameBracketsSymbolAndCount[findIndex][1]++;
+             var newString = str.slice(0, i+1);
+             return newString;
+          }
+        }else if(find === undefined) {
+          sameBracketsSymbolAndCount.push([symbol, 1]);
+        }
+      }
+    } return str;
+  }
+
+  function isCorrectStr (string) {
+    var lastSymbol = string.charAt(string.length-1);
+    var prevSymbol = string.charAt(string.length-2);
+    var bracketsIndex = bracketsConfig.find(elem => elem[1] === lastSymbol);
+    if (bracketsIndex[0] === prevSymbol && bracketsIndex[1] === lastSymbol) {
+      return true;
+    }
+    return false;
+  }
+
+  function newCheckingStr (correctstring) {
+    var length = correctstring.length;
+    var cuttingStr = correctstring.slice(0, -2);
+    var newStr = cuttingStr + str.slice(length);
+    index = length-2;
+    return newStr;
+  }
   if (str.length%2 != 0) {
     return false;
   }
+  var str = str;
+  var index = 0;
 
-  function findCloseBracket () {
-    for (var number = 0; number<str.length; number++) {
-      for (var i=0; i< bracketsConfig.length; i++) {
-        if (str.charAt(number) === bracketsConfig[i][1] &&
-            bracketsConfig[i][0] === bracketsConfig[i][1]) {
-
-            var openNumber = number;
-            for (var closeNumber = (openNumber + 1) ; closeNumber<str.length; closeNumber++) {
-                if (str.charAt(closeNumber) === str.charAt(openNumber)) {
-                  return [openNumber, bracketsConfig[i], closeNumber];
-                }
-            }
-            return false;
-        }
-        if (str.charAt(number) === bracketsConfig[i][1]) {
-          return [number, bracketsConfig[i], null];
-        }
+  while(str != "") {
+    var getstr = findCloseBracket(str, index);
+    var isCorrect = isCorrectStr(getstr);
+    if(isCorrect) {
+      str = newCheckingStr(getstr);
+      if(str === "") {
+        break;
       }
-    }
-    return false;
-  }
-
-  function isCorrectClosingBracket (number, number2) {
-
-    if (typeOfBrackets[0] === typeOfBrackets[1]) {
-      if (number === number2 - 1) {
-        return true;
-      }
-      if ((number - number2)%2 === 0) {
-        return false;
-      }
-      var newStr = str.substring(number+1, number2);
-      var c = check(newStr, bracketsConfig);
-      if (c == true) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    if ( str.charAt(number - 1) === typeOfBrackets[0]) {
-      return true;
-    }
-    return false;
-  }
-
-  var find = findCloseBracket(str);
-  if (!findCloseBracket()) {
-    return false;
-  }
-  var number = find[0];
-  var typeOfBrackets =  find[1];
-  var number2 = find[2];
-  var Correct = isCorrectClosingBracket(number, number2);
-
-  if (!(typeOfBrackets[0] === typeOfBrackets[1]) && number == 0) { 
-    return false;
-  }
-
-  if (!Correct) {
-    return false;
-  } else if ((str.length == 2) && Correct){ 
-    return true;
-  } else if (str.length > 2){
-
-    if (typeOfBrackets[0] === typeOfBrackets[1]) {
-      str = str.substring(0, number) + str.substring(number2+1, str.length);
-    } else {
-      str = str.substring(0, number-1) + str.substring(number+1, str.length); 
-    }
-
-    if (str.length == 0) {
-      return true;
-    }
-     
-    var b = check(str, bracketsConfig);
-
-    if (b == true) {
-      return true;
     } else {
       return false;
     }
   }
-  return false;
+  return true;
 }
 
 
